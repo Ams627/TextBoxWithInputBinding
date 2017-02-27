@@ -26,7 +26,14 @@ namespace TextBoxWithInputBinding
                 System.Diagnostics.Debug.WriteLine("pressed in mainwindow");
             });
 
+            Wonk = new RelayCommand(() =>
+            {
+                System.Diagnostics.Debug.WriteLine("enter pressed");
+            });
+
         }
+
+        public RelayCommand Wonk { get; set; }
 
         public RelayCommand Pressed1 { get; set; }
 

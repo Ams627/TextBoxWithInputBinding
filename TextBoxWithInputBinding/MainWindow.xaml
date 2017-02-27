@@ -10,7 +10,7 @@
         >
     <Grid>
         <StackPanel>
-            <TextBlock Text="Custom Control Demo. Control is below (bordered in blue)." Margin="0,0,0.4,0"/>
+            <TextBlock Text="Custom Control Demo. Control is below (bordered in blue)." Margin="0,0,0.4,0" />
             <TextBox x:Name="T1" Text="Try here 1" TabIndex="0"/>
             <TextBox x:Name="T2" Text="Try here 2" TabIndex="1"/>
             <TextBox x:Name="T3" Text="Try here 3" TabIndex="2"/>
@@ -25,6 +25,7 @@
                             Width="300" 
                             BorderBrush="Blue" BorderThickness="2" Focusable="True" TabIndex="4"
                             Items="{Binding StationList}"
+                            Command="{Binding Wonk}"
                             >
                 <local:AutoComp.ItemTemplate>
                     <DataTemplate>

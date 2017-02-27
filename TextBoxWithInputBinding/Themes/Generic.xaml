@@ -15,6 +15,7 @@
                                      >
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Down" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DownCommand}"/>
+                                    <KeyBinding Key="Enter" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=EnterCommand}"/>
                                 </TextBox.InputBindings>
                             </TextBox>
                             <Popup x:Name="Popup" IsOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowListBox}">
