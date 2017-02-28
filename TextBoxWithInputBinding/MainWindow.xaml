@@ -29,7 +29,7 @@
                             >
                 <local:AutoComp.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock>
+                        <TextBlock FocusVisualStyle="{x:Null}">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0}: {1}">
                                     <Binding Path="CRS"/>

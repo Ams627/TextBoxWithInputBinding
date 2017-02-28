@@ -10,6 +10,9 @@ namespace TextBoxWithInputBinding
 {
     public class AutoComp : Control, ICommandSource
     {
+        private TextBox _theTextBox;
+        private ListBox _theListBox;
+
         static AutoComp()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AutoComp), new FrameworkPropertyMetadata(typeof(AutoComp)));
@@ -27,15 +30,24 @@ namespace TextBoxWithInputBinding
         {
             _mode = Modes.Typing;
             Typing = "type something";
+
             DownCommand = new RelayCommand(() =>
             {
                 if (_mode == Modes.Typing)
                 {
                     _mode = Modes.Choosing;
                     ShowListBox = true;
+                    _theListBox.SelectedIndex = 0;
+                    var lbItem = _theListBox.SelectedItem;
+                    var listBoxItem = (ListBoxItem)_theListBox
+                        .ItemContainerGenerator
+                        .ContainerFromItem(lbItem);
+
+                    listBoxItem.Focus();
                 }
                 System.Diagnostics.Debug.WriteLine("Down Key Pressed");
             }, ()=>true);
+
             PressedCommand = new RelayCommand(() =>
             {
                 System.Diagnostics.Debug.WriteLine("Pressed");
@@ -240,16 +252,12 @@ namespace TextBoxWithInputBinding
         public object CommandParameter { get; }
         public IInputElement CommandTarget { get; }
 
-        //public override void OnApplyTemplate()
-        //{
-        //    base.OnApplyTemplate();
-        //    var textbox = GetTemplateChild("Part_TextBox") as TextBox;
-        //    var textboxBindings = textbox?.InputBindings;
-
-        //    var button = GetTemplateChild("Part_Button") as Button;
-
-        //    textboxBindings[0].Command = button.Command;
-        //    System.Diagnostics.Debug.WriteLine("Modified template");
-        //}
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            _theTextBox = GetTemplateChild("Part_TextBox") as TextBox;
+            _theListBox = GetTemplateChild("Part_ListBox") as ListBox;
+            System.Diagnostics.Debug.WriteLine("Modified template");
+        }
     }
 }
