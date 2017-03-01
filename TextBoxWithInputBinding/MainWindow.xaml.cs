@@ -10,6 +10,10 @@ namespace TextBoxWithInputBinding
         public string Name { get; set; }
         public string CRS { get; set; }
         public string NLC { get; set; }
+        public override string ToString()
+        {
+            return $"{Name} {CRS} - ({NLC})";
+        }
     }
     public partial class MainWindow : Window
     {
@@ -34,6 +38,11 @@ namespace TextBoxWithInputBinding
         }
 
         public RelayCommand Wonk { get; set; }
+        public RelayCommand<Station> AddStation { get; set; } = new RelayCommand<Station>((station) =>
+        {
+            System.Diagnostics.Debug.WriteLine($"Station {station} added");
+        });
+
 
         public RelayCommand Pressed1 { get; set; }
 

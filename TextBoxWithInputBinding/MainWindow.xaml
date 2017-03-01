@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TextBoxWithInputBinding"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525"
         FocusManager.FocusedElement="{Binding ElementName=Box}"
@@ -31,7 +33,8 @@
                     <DataTemplate>
                         <TextBlock FocusVisualStyle="{x:Null}">
                             <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}: {1}">
+                                <MultiBinding StringFormat="{}{0} {1} - ({2})">
+                                    <Binding Path="Name"/>
                                     <Binding Path="CRS"/>
                                     <Binding Path="NLC"/>
                                 </MultiBinding> 
@@ -39,6 +42,12 @@
                         </TextBlock>
                     </DataTemplate>
                 </local:AutoComp.ItemTemplate>
+                <local:AutoComp.ListBoxContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Add this station" Command="{Binding AddStation}" CommandParameter="{Binding ElementName=Box, Path=ActualHeight}"/>
+                        <MenuItem Header="Add all stations within 10km radius"/>
+                    </ContextMenu>
+                </local:AutoComp.ListBoxContextMenu>
             </local:AutoComp>
             <Button Width="200" Content="Press for MainWindow" Command="{Binding (local:MainWindow.Pressed1)}"/>
         </StackPanel>

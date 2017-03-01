@@ -12,6 +12,7 @@ namespace TextBoxWithInputBinding
     {
         private TextBox _theTextBox;
         private ListBox _theListBox;
+        private string _tempTyping;
 
         static AutoComp()
         {
@@ -29,12 +30,13 @@ namespace TextBoxWithInputBinding
         public AutoComp()
         {
             _mode = Modes.Typing;
-            Typing = "type something";
+            Typing = _tempTyping = String.Empty;
 
             DownCommand = new RelayCommand(() =>
             {
                 if (_mode == Modes.Typing)
                 {
+                    _tempTyping = Typing;
                     _mode = Modes.Choosing;
                     ShowListBox = true;
                     _theListBox.SelectedIndex = 0;
@@ -44,6 +46,7 @@ namespace TextBoxWithInputBinding
                         .ContainerFromItem(lbItem);
 
                     listBoxItem.Focus();
+                    _theTextBox.Text = listBoxItem.Content.ToString();
                 }
                 System.Diagnostics.Debug.WriteLine("Down Key Pressed");
             }, ()=>true);
@@ -52,6 +55,7 @@ namespace TextBoxWithInputBinding
             {
                 System.Diagnostics.Debug.WriteLine("Pressed");
             }, ()=>true);
+
             EnterCommand = new RelayCommand(() =>
             {
                 if (Command != null)
@@ -68,8 +72,58 @@ namespace TextBoxWithInputBinding
                     }
                 }
             });
+
+            ListBoxUpCommand = new RelayCommand(() =>
+            {
+                if (_theListBox.SelectedIndex == 0)
+                {
+                    _theTextBox.Focus();
+                    Typing = _tempTyping;
+                    _theTextBox.CaretIndex = Typing.Length;
+                    _mode = Modes.Typing;
+                }
+                else
+                {
+                    _theListBox.SelectedIndex--;
+                    // make sure focused item is the selected item:
+                    var item =
+                        _theListBox.ItemContainerGenerator.ContainerFromIndex(_theListBox.SelectedIndex) as ListBoxItem;
+                    item?.Focus();
+
+                    System.Diagnostics.Debug.WriteLine("Up command ex.");
+                }
+            });
+
+            SelectedItemChanged = new RelayCommand(() =>
+            {
+                var lbItem = _theListBox.SelectedItem;
+                var listBoxItem = (ListBoxItem)_theListBox
+                    .ItemContainerGenerator
+                    .ContainerFromItem(lbItem);
+
+                listBoxItem.Focus();
+                _theTextBox.Text = listBoxItem.Content.ToString();
+
+                System.Diagnostics.Debug.WriteLine("Changed.");
+            });
+
         }
 
+
+
+        public ContextMenu ListBoxContextMenu
+        {
+            get { return (ContextMenu)GetValue(ListBoxContextMenuProperty); }
+            set { SetValue(ListBoxContextMenuProperty, value); }
+        }
+
+        public static readonly DependencyProperty ListBoxContextMenuProperty =
+            DependencyProperty.Register("ListBoxContextMenu", typeof(ContextMenu), typeof(AutoComp), new PropertyMetadata(null));
+
+        public RelayCommand SelectedItemChanged { get; set; }
+
+
+        public RelayCommand ListBoxUpCommand { get; set; }
 
         public RelayCommand EnterCommand
         {

@@ -1,7 +1,9 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:TextBoxWithInputBinding">
+    xmlns:local="clr-namespace:TextBoxWithInputBinding"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    >
 
     <Style TargetType="{x:Type local:AutoComp}">
         <Setter Property="Template">
@@ -11,7 +13,8 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <StackPanel>
-                            <TextBox Text="{TemplateBinding Typing}" Name="Part_TextBox"
+                            <TextBox Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Typing, UpdateSourceTrigger=PropertyChanged}"
+                                     Name="Part_TextBox"
                                      FocusManager.IsFocusScope="True" 
                                      >
                                 <TextBox.InputBindings>
@@ -24,13 +27,24 @@
                                          ItemTemplate="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ItemTemplate}"
                                          ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Items}"
                                          DisplayMemberPath="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MemberPath}"
-                                         MinHeight="100" Width="{Binding ElementName=Part_TextBox, Path=ActualWidth, Converter={local:WConv}}">
+                                         ContextMenu="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ListBoxContextMenu}"
+                                         MinHeight="100" Width="{Binding ElementName=Part_TextBox, Path=ActualWidth, Converter={local:WConv}}"
+                                         >
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectedItemChanged}"  CommandParameter="{Binding ElementName=Part_ListBox, Path=SelectedItem}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                                             <!--<Setter Property="Focusable" Value="False"/>-->
                                         </Style>
                                     </ListBox.ItemContainerStyle>
+                                    <ListBox.InputBindings>
+                                        <KeyBinding Key="Up" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ListBoxUpCommand}"/>
+                                    </ListBox.InputBindings>
                                 </ListBox>
                             </Popup>
                         </StackPanel>
